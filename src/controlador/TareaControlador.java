@@ -6,6 +6,7 @@ package controlador;
 
 import java.util.List;
 import modelo.Tarea;
+import modelo.TareaCount;
 import modelo.TareaDAO;
 import excepciones.TareaException;
 
@@ -65,10 +66,28 @@ public class TareaControlador {
         return tareas;
     }
     
-    public boolean eliminarTarea(int id){
-        return tareaDAO.eliminarTarea(id);
+    public List<TareaCount> listarTareasCount() throws TareaException {
+        List<TareaCount> tareasCount = tareaDAO.listarTareasCount();
+        
+        if(tareasCount.isEmpty()){
+            throw new TareaException("No se encontraron tareas en la base de datos");
+        }
+        
+        return tareasCount;
     }
     
+    public boolean eliminarTarea(int id) throws TareaException{
+        boolean encontrado = false;
+        Tarea tarea = tareaDAO.buscarTareaPorId(id);
+        if(tarea != null){
+           encontrado = true;
+           tareaDAO.eliminarTarea(id);           
+        }else{            
+            throw new TareaException("No hay tarea con ese id");
+        }
+        return encontrado;
+    }
+            
     private void validarDatosTarea(String nombre,String descripcion) throws TareaException{
         if(nombre == null || nombre.trim().isEmpty()){
             throw new TareaException("El nombre de la tarea no puede estar vacio");

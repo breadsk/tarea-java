@@ -7,6 +7,7 @@ package vista;
 import controlador.TareaControlador;
 import javax.swing.table.DefaultTableModel;
 import modelo.Tarea;
+import modelo.TareaCount;
 import java.util.List;
 import javax.swing.JOptionPane;
 import excepciones.TareaException;
@@ -26,6 +27,7 @@ public class TareasVista extends javax.swing.JFrame {
         initComponents();
         tareaControlador = new TareaControlador();        
         cargarTareasEnTabla();
+        cargarTareasEnTablaCount();
     }
 
     /**
@@ -46,12 +48,18 @@ public class TareasVista extends javax.swing.JFrame {
         btnGuardar = new javax.swing.JButton();
         btnBuscarTarea = new javax.swing.JButton();
         txtId = new javax.swing.JTextField();
+        btnEliminar = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblTareasCount = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblTareas = new javax.swing.JTable();
         btnCargarTareas = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Gestor de Tareas Nicolás");
+        setResizable(false);
 
         pnlIngresoDatos.setBorder(javax.swing.BorderFactory.createTitledBorder("Ingrese datos de su tarea"));
 
@@ -62,6 +70,7 @@ public class TareasVista extends javax.swing.JFrame {
         lblDescripcion.setText("Descripcion");
 
         txaDescripcion.setColumns(20);
+        txaDescripcion.setLineWrap(true);
         txaDescripcion.setRows(5);
         jScrollPane1.setViewportView(txaDescripcion);
 
@@ -79,32 +88,73 @@ public class TareasVista extends javax.swing.JFrame {
             }
         });
 
+        btnEliminar.setText("Eliminar Tarea");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Contador Tareas"));
+
+        tblTareasCount.setModel(new javax.swing.table.DefaultTableModel(
+            new Object[][]{},
+            new String[]{"N°", "Listas", "Pendientes"} // Definir las columnas aquí
+        ) {
+            boolean[] canEdit = new boolean[]{false, false, false}; // Configurar si las columnas son editables
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit[columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(tblTareasCount);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(86, 86, 86))
+        );
+
         javax.swing.GroupLayout pnlIngresoDatosLayout = new javax.swing.GroupLayout(pnlIngresoDatos);
         pnlIngresoDatos.setLayout(pnlIngresoDatosLayout);
         pnlIngresoDatosLayout.setHorizontalGroup(
             pnlIngresoDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlIngresoDatosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlIngresoDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlIngresoDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlIngresoDatosLayout.createSequentialGroup()
-                        .addComponent(btnGuardar)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlIngresoDatosLayout.createSequentialGroup()
-                        .addGroup(pnlIngresoDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnlIngresoDatosLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(pnlIngresoDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(pnlIngresoDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(lblNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(pnlIngresoDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(pnlIngresoDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(lblNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlIngresoDatosLayout.createSequentialGroup()
                                 .addGroup(pnlIngresoDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(lblDescripcion, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnBuscarTarea, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(44, 44, 44))))
+                                    .addComponent(txtId)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlIngresoDatosLayout.createSequentialGroup()
+                                        .addGroup(pnlIngresoDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(btnBuscarTarea, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(btnGuardar, javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(btnEliminar, javax.swing.GroupLayout.Alignment.LEADING))
+                                        .addGap(0, 0, Short.MAX_VALUE)))
+                                .addGap(18, 18, 18)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlIngresoDatosLayout.createSequentialGroup()
+                        .addComponent(lblDescripcion)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(22, 22, 22))
         );
         pnlIngresoDatosLayout.setVerticalGroup(
             pnlIngresoDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -117,13 +167,18 @@ public class TareasVista extends javax.swing.JFrame {
                 .addComponent(lblDescripcion)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(54, 54, 54)
-                .addComponent(btnGuardar)
-                .addGap(29, 29, 29)
-                .addGroup(pnlIngresoDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnBuscarTarea)
-                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(40, 40, 40)
+                .addGroup(pnlIngresoDatosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlIngresoDatosLayout.createSequentialGroup()
+                        .addComponent(btnGuardar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnBuscarTarea)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnEliminar))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
+                .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Datos Tarea"));
@@ -155,14 +210,12 @@ public class TareasVista extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnCargarTareas)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                    .addComponent(btnCargarTareas))
+                .addGap(17, 17, 17))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -175,22 +228,18 @@ public class TareasVista extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pnlIngresoDatos, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnlIngresoDatos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(pnlIngresoDatos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(15, 15, 15)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(pnlIngresoDatos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -212,6 +261,7 @@ public class TareasVista extends javax.swing.JFrame {
                 limpiar();
                 limpiar2();
                 cargarTareasEnTabla();
+                cargarTareasEnTablaCount();
             }else{
                 //Actualizar la tarea existente
                 int id = Integer.parseInt(txtId.getText().trim());
@@ -224,6 +274,7 @@ public class TareasVista extends javax.swing.JFrame {
                 limpiar();
                 limpiar2();
                 cargarTareasEnTabla();
+                cargarTareasEnTablaCount();
             }
         
         }catch(NumberFormatException ex){
@@ -237,12 +288,7 @@ public class TareasVista extends javax.swing.JFrame {
                                             "Error en: " + ex.getMessage(), 
                                             "Error", 
                                             JOptionPane.ERROR_MESSAGE);
-        }
-            
-            
-            
-            
-       
+        }                                                       
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnBuscarTareaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarTareaActionPerformed
@@ -278,6 +324,32 @@ public class TareasVista extends javax.swing.JFrame {
         cargarTareasEnTabla();
     }//GEN-LAST:event_btnCargarTareasActionPerformed
 
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        
+        try{
+                        
+            int id = Integer.parseInt(txtId.getText());
+            System.out.println("EL id es: " + id);
+            tareaControlador = new TareaControlador();
+            tareaControlador.eliminarTarea(id);
+            
+            JOptionPane.showMessageDialog(
+                        this,
+                        "Tarea eliminada satisfactoriamente",
+                        "Ok",
+                        JOptionPane.OK_OPTION);
+            cargarTareasEnTabla();
+            cargarTareasEnTablaCount();
+            limpiar2();
+            txtNombre.setFocusable(true);
+        }catch(NumberFormatException ex){
+            JOptionPane.showMessageDialog(null,"Por favor ingrese un numero válido","Error",JOptionPane.OK_OPTION);
+            limpiar2();
+        }catch(TareaException e){
+            JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
     private void limpiar(){
         txtNombre.setText("");
         txaDescripcion.setText("");
@@ -308,6 +380,34 @@ public class TareasVista extends javax.swing.JFrame {
                     tarea.getEstado() ? "Activa" : "Inactiva"
                 };
                 modelo.addRow(fila);
+            }
+            
+        }catch(Exception ex){
+            System.out.println("Error al cargas tareas" + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+    
+    private void cargarTareasEnTablaCount(){
+        try{
+        
+            //Primero obtenemos la lista de las tareas desde el controlador
+            List<TareaCount> tareasCount = tareaControlador.listarTareasCount();
+            
+            //Obtenemos el modelo de la tabla
+            DefaultTableModel modeloCount = (DefaultTableModel) tblTareasCount.getModel();
+            
+            //Limpiar el modelo
+            modeloCount.setRowCount(0);
+            
+            //Vamos a agregar las filas con los datos de las tareas
+            for(TareaCount tareaCount : tareasCount){
+                Object[] fila = {
+                    tareaCount.getCantidadTareas(),
+                    tareaCount.getCantidadTareasActivas(),
+                    tareaCount.getCantidadTareasInactivas()
+                };
+                modeloCount.addRow(fila);
             }
             
         }catch(Exception ex){
@@ -357,14 +457,18 @@ public class TareasVista extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscarTarea;
     private javax.swing.JButton btnCargarTareas;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblDescripcion;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JPanel pnlIngresoDatos;
     private javax.swing.JTable tblTareas;
+    private javax.swing.JTable tblTareasCount;
     private javax.swing.JTextArea txaDescripcion;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtNombre;

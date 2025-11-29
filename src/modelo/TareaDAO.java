@@ -108,6 +108,37 @@ public class TareaDAO {
             }
         }
         
+        public List<TareaCount> listarTareasCount(){
+            Connection connection = null;
+            PreparedStatement ps = null;
+            ResultSet rs = null;
+            List<TareaCount> tareas = new ArrayList<>();
+            try{
+                connection = Conexion.getConnection();
+                String sql = "SELECT \n" +
+                    "    COUNT(*) AS cantidadTareas,\n" + // Cambiado a cantidadTareas
+                    "    COUNT(CASE WHEN estado = 1 THEN 1 END) AS cantidadTareasActivas,\n" + // Cambiado
+                    "    COUNT(CASE WHEN estado = 0 THEN 1 END) AS cantidadTareasInactivas\n" + // Cambiado
+                    "FROM tarea;";
+        
+                ps = connection.prepareStatement(sql);
+                rs = ps.executeQuery();
+            
+                while(rs.next()){
+                    TareaCount tarea = new TareaCount(
+                    rs.getInt("cantidadTareas"), // Ahora coincide con el alias del SQL
+                    rs.getInt("cantidadTareasActivas"), // Ahora coincide
+                    rs.getInt("cantidadTareasInactivas") // Ahora coincide
+                );
+                tareas.add(tarea);
+                }
+            }catch(SQLException ex){
+                System.out.println("Error al listar: "+ ex.getMessage());
+            }finally {
+                cerrarRecursos(connection, ps, rs);
+            }
+            return tareas;
+        }
         
         public List<Tarea> listarTarea(){
             Connection connection = null;
