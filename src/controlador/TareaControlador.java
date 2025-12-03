@@ -42,6 +42,22 @@ public class TareaControlador {
         return tareaDAO.buscarTareaPorId(id);
     }
     
+    public Boolean buscarEstadoTareaPorId(int id){
+        return tareaDAO.buscarEstadoPorId(id);
+    }
+    
+    public String cambiarEstadoTarea(int id,boolean estado){
+        //1.Creamos el objeto tarea con los datos entregados
+        Tarea tarea = new Tarea(id,estado);
+        
+        //Usar el DAO para actualizar el estado de la tarea
+        if(tareaDAO.cambiarEstadoTarea(tarea)){
+            return "Estado de tarea cambiado";
+        }else{
+            return "No se pudo actualizar el estado de la tarea";
+        }
+    }        
+    
     public String actualizarTarea(int id,String nombre,String descripcion,boolean estado){
         
         //1.Creamos el objeto tarea con los datos entregados
@@ -81,7 +97,7 @@ public class TareaControlador {
         Tarea tarea = tareaDAO.buscarTareaPorId(id);
         if(tarea != null){
            encontrado = true;
-           tareaDAO.eliminarTarea(id);           
+           tareaDAO.eliminarTarea(id);
         }else{            
             throw new TareaException("No hay tarea con ese id");
         }

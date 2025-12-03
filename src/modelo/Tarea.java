@@ -16,6 +16,11 @@ public class Tarea {
     
     public Tarea(){}
     
+    public Tarea(int id,Boolean estado){
+        this.id = id;
+        this.estado = estado;
+    }
+    
     public Tarea(String nombre,String descripcion,Boolean estado){
         this.nombre = nombre;
         this.descripcion = descripcion;

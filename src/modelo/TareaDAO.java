@@ -8,6 +8,7 @@ import java.sql.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import javax.swing.JOptionPane;
 
@@ -78,6 +79,68 @@ public class TareaDAO {
             return tarea;
         }
         
+        public boolean buscarEstadoPorId(int id){
+            
+            Connection connection = null;
+            PreparedStatement ps = null;
+            ResultSet rs = null;
+            Tarea tarea = null;
+            
+            Boolean estado = false;
+            
+            try{
+               
+                connection = Conexion.getConnection();
+                String sql = "SELECT estado FROM tarea WHERE id = ?";
+                
+                ps = connection.prepareStatement(sql);
+                ps.setInt(1, id);
+                rs = ps.executeQuery();
+                
+                if(rs.next()){
+                    tarea = new Tarea();
+                    tarea.setId(rs.getInt("id"));                    
+                    tarea.setEstado(rs.getBoolean("estado"));
+                }
+                estado = tarea.getEstado();                                
+                
+            }catch(SQLException ex){
+                System.out.println("Error al buscar: " + ex.getMessage());
+            }finally{
+                cerrarRecursos(connection, ps, rs);
+            }
+            return estado;
+        }
+        
+        
+        public boolean cambiarEstadoTarea(Tarea tarea){
+            
+            Connection connection = null;
+            PreparedStatement ps = null;
+            boolean estado = buscarEstadoPorId(tarea.getId());
+            
+            try{
+                connection = Conexion.getConnection();
+                String sql = "UPDATE tarea SET estado = ? WHERE id = ?";
+                
+                estado = !estado;
+                
+                ps = connection.prepareStatement(sql);
+                ps.setBoolean(1,tarea.getEstado());
+                ps.setInt(2,tarea.getId());
+                
+                int resultado = ps.executeUpdate();
+                
+                return resultado > 0;
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(null, "Error al actualizar: " + ex.getMessage(), 
+                                        "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            } finally {
+                cerrarRecursos(connection, ps, null);
+            }
+            
+        }
         
         public boolean actualizarTarea(Tarea tarea){
         
